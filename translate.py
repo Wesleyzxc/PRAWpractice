@@ -1,6 +1,7 @@
 import praw
 import config
 import re
+import time
 from googletrans import Translator
 from praw.models import Message
 
@@ -34,16 +35,34 @@ def submission_translator(reddit, submissionNumber=0):
             print(comments.body)
             print(translator.translate(comments.body).text)
     
+def response(original, translated):
+    response_str = '''The original text: {0} is translated to: {1}
+    '''
+    print(response_str.format(original, translated))
+    
+    return response_str.format(original, translated) # replace placeholders
     
 def inbox_translator(reddit):
     translator, RE_EMOJI = start_translator()
     
     for item in reddit.inbox.unread(limit=None):
-        item.body = RE_EMOJI.sub(r'', item.body)
-        print(translator.detect(item.body))
-        if (translator.detect(item.body).lang!='en'): # Checks for anything non-English
-            user = item.author
-            item.reply("Hi, " + str(user) + ". Your original text: " + item.body + " is translated to: " + translator.translate(item.body).text)
+        item.body = RE_EMOJI.sub(r'', item.body) # replaces emoji
+        item.body = item.body.strip('u/just_a_data_bot') # removes mention
+        print(item.body)
+        if (item.body == ""):
+            original = item.parent().body # Gets parent comment
+            translated = translator.translate(original).text
+            item.reply(response(original, translated))
             item.mark_read()
-            print(translator.translate(item.body).text)
-    
+            time.sleep(3)
+            
+        else:        
+            print(translator.detect(item.body)) # Shows detected language
+            if (translator.detect(item.body).lang!='en'): # Checks for anything non-English
+                original = item.body # Gets parent comment
+                translated = translator.translate(original).text
+                user = item.author
+                item.reply(response(original, translated))
+                item.mark_read()
+                time.sleep(3)
+        

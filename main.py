@@ -10,13 +10,7 @@ def start():
                          user_agent=config.USER_AGENT,
     					 username=config.USERNAME,
     					 password=config.PASSWORD)
-    
-    return reddit
-					 
-
-
-
-    
+    return reddit   
 
     
 if __name__ == "__main__":
