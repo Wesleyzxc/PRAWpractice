@@ -13,6 +13,6 @@ Tag the bot
 >> child: u/just_a_bot
 <!-- -->
 gives
->>>The original text: お前はもう死んでいる is translated to: You are already dead
+>The original text: お前はもう死んでいる is translated to: You are already dead
 <!-- -->
 
